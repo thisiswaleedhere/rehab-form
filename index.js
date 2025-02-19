@@ -61,7 +61,7 @@ app.get('/', (req, res) => {
     res.send('Rehab Form Handler Working')
 })
 
-const PORT = 1290;
+const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
