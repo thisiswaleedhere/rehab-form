@@ -1,28 +1,64 @@
+import 'dotenv/config'
 import cors from 'cors'
-
 import express, { json } from 'express'
+import nodemailer from 'nodemailer'
+import nodemailerMailgun from 'nodemailer-mailgun-transport'
+import { rateLimit } from 'express-rate-limit'
+import helmet from 'helmet'
+
 const app = express()
+const mg = nodemailerMailgun
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+})
+
+app.use(limiter)
 
 app.use(json())
+app.use(helmet())
 app.use(cors())
+
+
 
 app.post('/submit', (req, res) => {
     const { name, number } = req.body;
-    // const mailOptions = {
-    //     from: email,
-    //     to: 'your-email@gmail.com',
-    //     subject: 'Contact Form',
-    //     text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
-    // };
+    const auth = {
+        auth: {
+            api_key: process.env.MAILGUN_API,
+            domain: process.env.MAILGUN_DOMAIN
+        }
+    }
+
+    const nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+    nodemailerMailgun.sendMail({
+        from: 'aysharehabdev@gmail.com',
+        to: 'aysharehabdev@gmail.com', // An array if you have multiple recipients.
+        cc: 'whenchaimetmemes@gmail.com',
+        subject: 'Hey you, awesome!',
+        'replyTo': 'aysharehabdev@gmail.com',
+        html: `<p> Please contact the following individual as soon as possible.(Website Enquiry)<br/> <b>Name: ${name}. Contact : ${number}</b></p>`
+    }, (err, info) => {
+        if (err) {
+            console.log(`Error: ${err}`);
+            res.send('Encountered Error');
+        }
+        else {
+            console.log(`Response: ${info}`);
+            res.send('Contact detail received');
+        }
+    });
 
     console.log(name, number);
-    res.send('form received and happy');
 
 })
 
 app.get('/', (req, res) => {
-    console.log('hello');
-    res.send('Hello World')
+    res.send('Rehab Form Handler Working')
 })
 
 const PORT = 1290;
