@@ -16,6 +16,7 @@ const limiter = rateLimit({
     legacyHeaders: false,
 })
 
+app.set('trust proxy', 1);
 app.use(limiter)
 
 app.use(json())
