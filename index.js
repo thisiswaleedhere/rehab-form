@@ -38,8 +38,8 @@ app.post('/submit', (req, res) => {
 
     nodemailerMailgun.sendMail({
         from: 'aysharehabdev@gmail.com',
-        to: 'aysharehabilitation@gmail.com', // An array if you have multiple recipients.
-        cc: 'aysharehabdev@gmail.com',
+        to: 'info@aysharehab.ae', // An array if you have multiple recipients.
+        cc: 'aysharehabilitation@gmail.com',
         subject: 'New Enquiry on your Website',
         'replyTo': 'aysharehabdev@gmail.com',
         html: `<p> Please contact the following individual as soon as possible.(Website Enquiry)<br/> <b>Name: ${name}. Contact : ${number}</b></p>`
